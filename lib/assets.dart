@@ -1,0 +1,1 @@
+double kDefaultPadding = 16.0;
