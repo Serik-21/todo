@@ -16,12 +16,16 @@ ToDo _$ToDoFromJson(Map<String, dynamic> json) => ToDo(
       dueDate: json['dueDate'] == null
           ? null
           : DateTime.parse(json['dueDate'] as String),
+      description: json['description'] as String?,
+      time: json['time'] as String?,
     );
 
 Map<String, dynamic> _$ToDoToJson(ToDo instance) => <String, dynamic>{
       'title': instance.title,
       'subTitle': instance.subTitle,
       'userTag': instance.userTag,
+      'description': instance.description,
+      'time': instance.time,
       'fromDate': instance.fromDate?.toIso8601String(),
       'dueDate': instance.dueDate?.toIso8601String(),
     };

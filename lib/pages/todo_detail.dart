@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:todo/assets.dart';
 import 'package:todo/stores/todo_store.dart';
-
 import '../service_locator.dart';
 
 class ToDoDetails extends StatefulWidget {
@@ -21,6 +20,7 @@ class _ToDoDetailsState extends State<ToDoDetails> {
   DateTime? dueDate;
   final fromDateController = TextEditingController();
   final dueDateController = TextEditingController();
+  String requiredField = "Обезательное поле";
   final _formKey = GlobalKey<FormState>();
   void setRange(DateTimeRange? value) {
     if (value?.start != null) {
@@ -61,7 +61,6 @@ class _ToDoDetailsState extends State<ToDoDetails> {
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             child: Form(
               key: _formKey,
-              autovalidateMode: AutovalidateMode.always,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -71,7 +70,7 @@ class _ToDoDetailsState extends State<ToDoDetails> {
                   TextFormField(
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
+                        return requiredField;
                       }
                       return null;
                     },
@@ -84,7 +83,7 @@ class _ToDoDetailsState extends State<ToDoDetails> {
                   TextFormField(
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
+                        return requiredField;
                       }
                       return null;
                     },
@@ -92,14 +91,13 @@ class _ToDoDetailsState extends State<ToDoDetails> {
                         const InputDecoration(labelText: 'Подзаголовок'),
                     onChanged: (value) => todoStore.setSubTitle(value),
                   ),
-
                   SizedBox(
                     height: kDefaultPadding,
                   ),
                   TextFormField(
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
+                        return requiredField;
                       }
                       return null;
                     },
@@ -130,7 +128,7 @@ class _ToDoDetailsState extends State<ToDoDetails> {
                     TextFormField(
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter some text';
+                          return requiredField;
                         }
                         return null;
                       },
@@ -143,10 +141,36 @@ class _ToDoDetailsState extends State<ToDoDetails> {
                   SizedBox(
                     height: kDefaultPadding,
                   ),
+                  TextFormField(
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return requiredField;
+                      }
+                      return null;
+                    },
+                    readOnly: true,
+                    controller: dueDateController,
+                    decoration: InputDecoration(
+                        labelText: 'Время',
+                        suffixIcon: IconButton(
+                            onPressed: () {
+                              showTimePicker(
+                                context: context,
+                                initialTime: TimeOfDay.now(),
+
+                              );
+                            },
+                            icon: const Icon(Icons.watch_later_outlined))),
+                  ),
+                  SizedBox(
+                    height: kDefaultPadding,
+                  ),
+
                   OutlinedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           todoStore.addTodoToList();
+                          context.pop();
                         }
                       },
                       child: const Text("Добавить задачу"))

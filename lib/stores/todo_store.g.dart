@@ -41,6 +41,22 @@ mixin _$ToDoStore on _ToDoStore, Store {
     });
   }
 
+  late final _$initAsyncAction =
+      AsyncAction('_ToDoStore.init', context: context);
+
+  @override
+  Future<void> init() {
+    return _$initAsyncAction.run(() => super.init());
+  }
+
+  late final _$addTodoToListAsyncAction =
+      AsyncAction('_ToDoStore.addTodoToList', context: context);
+
+  @override
+  Future<void> addTodoToList() {
+    return _$addTodoToListAsyncAction.run(() => super.addTodoToList());
+  }
+
   late final _$_ToDoStoreActionController =
       ActionController(name: '_ToDoStore', context: context);
 
@@ -100,11 +116,11 @@ mixin _$ToDoStore on _ToDoStore, Store {
   }
 
   @override
-  void addTodoToList() {
-    final _$actionInfo = _$_ToDoStoreActionController.startAction(
-        name: '_ToDoStore.addTodoToList');
+  void setTime(String value) {
+    final _$actionInfo =
+        _$_ToDoStoreActionController.startAction(name: '_ToDoStore.setTime');
     try {
-      return super.addTodoToList();
+      return super.setTime(value);
     } finally {
       _$_ToDoStoreActionController.endAction(_$actionInfo);
     }

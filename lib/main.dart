@@ -3,11 +3,14 @@ import 'package:go_router/go_router.dart';
 import 'package:todo/routes.dart';
 import 'package:todo/service_locator.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:todo/stores/notification_manager.dart';
 import 'package:todo/stores/todo_store.dart';
 import 'color_schemes.g.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
   setupSingleton();
+  NotificationManager().initNotification();
   runApp(const MyApp());
 }
 
@@ -19,7 +22,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Flutter Demo',
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.system,
       theme: ThemeData(
           useMaterial3: true,
           colorScheme: lightColorScheme,
@@ -51,8 +54,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   final todoStore = serviceLocator<ToDoStore>();
+  @override
+  void initState() {
+    super.initState();
+    todoStore.init();
+  }
 
   @override
   Widget build(BuildContext context) {

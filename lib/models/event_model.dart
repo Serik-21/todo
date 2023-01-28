@@ -7,10 +7,12 @@ class ToDo{
   String? title;
   String? subTitle;
   String? userTag;
+  String? description;
+  String? time;
   DateTime? fromDate;
   DateTime? dueDate;
 
-  ToDo({this.title, this.subTitle, this.userTag, this.fromDate, this.dueDate});
+  ToDo({this.title, this.subTitle, this.userTag, this.fromDate, this.dueDate,this.description,this.time});
 
   factory ToDo.fromJson(Map<String, dynamic> json) => _$ToDoFromJson(json);
 
