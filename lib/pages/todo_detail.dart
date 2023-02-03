@@ -20,28 +20,15 @@ class _ToDoDetailsState extends State<ToDoDetails> {
   DateTime? dueDate;
   final fromDateController = TextEditingController();
   final dueDateController = TextEditingController();
+  final timeController = TextEditingController();
   String requiredField = "Обезательное поле";
   final _formKey = GlobalKey<FormState>();
-  void setRange(DateTimeRange? value) {
-    if (value?.start != null) {
-      fromDate = value!.start;
-      String formattedDate = DateFormat('yyyy.MM.dd').format(fromDate!);
+  void setRange(DateTime? value) {
+    if (value != null) {
+      fromDate = value;
+      String formattedDate = DateFormat(kDefaultDataFormat).format(fromDate!.subtract(const Duration(hours: 17,minutes: 3)));
       fromDateController.text = formattedDate;
       todoStore.setFromDate(fromDate!);
-      if (value.end == null) {
-        setState(() {
-          showDueField = false;
-        });
-      }
-    }
-    if (value?.end != null) {
-      setState(() {
-        showDueField = true;
-      });
-      dueDate = value!.end;
-      String formattedDate = DateFormat('yyyy.MM.dd').format(dueDate!);
-      dueDateController.text = formattedDate;
-      todoStore.setToDue(dueDate!);
     }
   }
 
@@ -103,15 +90,17 @@ class _ToDoDetailsState extends State<ToDoDetails> {
                     },
                     readOnly: true,
                     decoration: InputDecoration(
-                      labelText: showDueField == false
-                          ? 'Выбрать дату'
-                          : "Дата начало",
+                      labelText:  'Выбрать дату'
+                        ,
                       suffixIcon: IconButton(
                           onPressed: () {
-                            showDateRangePicker(
+                            showDatePicker(
                               context: context,
+                              initialEntryMode:
+                                  DatePickerEntryMode.calendarOnly,
                               firstDate: DateTime.now(),
                               lastDate: DateTime(2045),
+                              cancelText: "Отмена", initialDate: DateTime.now(),
                             ).then((value) {
                               setRange(value);
                             });
@@ -149,7 +138,7 @@ class _ToDoDetailsState extends State<ToDoDetails> {
                       return null;
                     },
                     readOnly: true,
-                    controller: dueDateController,
+                    controller: timeController,
                     decoration: InputDecoration(
                         labelText: 'Время',
                         suffixIcon: IconButton(
@@ -157,15 +146,20 @@ class _ToDoDetailsState extends State<ToDoDetails> {
                               showTimePicker(
                                 context: context,
                                 initialTime: TimeOfDay.now(),
-
-                              );
+                                confirmText: "Выбрать",
+                                initialEntryMode: TimePickerEntryMode.dialOnly,
+                                cancelText: "Отмена",
+                                hourLabelText: "Выбрать время",
+                              ).then((value){
+                                timeController.text = value!.format(context);
+                                todoStore.setTime(value.format(context));
+                              });
                             },
                             icon: const Icon(Icons.watch_later_outlined))),
                   ),
                   SizedBox(
                     height: kDefaultPadding,
                   ),
-
                   OutlinedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {

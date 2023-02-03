@@ -1,11 +1,14 @@
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:todo/assets.dart';
+import 'package:todo/service_locator.dart';
 
 class NotificationManager {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
   Future<void> initNotification() async {
-
+    flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>()?.requestPermission();
     // Android initialization
     const AndroidInitializationSettings initializationSettingsAndroid =
     AndroidInitializationSettings('@mipmap/ic_launcher');// should mention the app icon
@@ -29,12 +32,22 @@ class NotificationManager {
     // the initialization settings are initialized after they are setted
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
-  Future<void> showNotification(int id, String title, String body) async {
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      id,
-      title,
-      body,
-      tz.TZDateTime.now(tz.local).add(Duration(seconds: 1)),
+  tz.TZDateTime _nextInstanceOfTenAM() {
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    tz.TZDateTime scheduledDate =
+    tz.TZDateTime(tz.local, now.year, now.month, now.day, 17,26);
+    if (scheduledDate.isBefore(now)) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
+    logger.w(scheduledDate);
+    return scheduledDate;
+  }
+  Future<void> showNotification() async {
+    await flutterLocalNotificationsPlugin.periodicallyShow(
+      0,
+      "Қайырлы таң",
+      "Бугінгі тапсырмаларыңызды тексеріңіз",
+      RepeatInterval.daily,
       const NotificationDetails(
         // Android details
         android: AndroidNotificationDetails('main_channel', 'Main Channel',
@@ -48,10 +61,8 @@ class NotificationManager {
           presentBadge: true,
           presentSound: true,
         ),
+
       ),
-      // Type of time interpretation
-      uiLocalNotificationDateInterpretation:
-      UILocalNotificationDateInterpretation.absoluteTime,
       androidAllowWhileIdle: true,//To show notification even when the app is closed
     );
   }

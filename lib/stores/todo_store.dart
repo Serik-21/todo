@@ -1,10 +1,12 @@
 
 import 'dart:convert';
 
+import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo/models/event_model.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:todo/service_locator.dart';
 import 'package:todo/stores/notification_manager.dart';
 import '../assets.dart';
 part 'todo_store.g.dart';
@@ -88,9 +90,7 @@ abstract class _ToDoStore with Store {
 
     );
     todoList.add(toDo);
-    NotificationManager().showNotification(
-        1, toDo.title!, toDo.subTitle!);
-
+    logger.w(selectedTodo!.fromDate!);
     final prefs = await SharedPreferences.getInstance();
     prefs.setString(kDefaultListKey, jsonEncode(todoList));
   }

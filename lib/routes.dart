@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:todo/main.dart';
+import 'package:todo/pages/home.dart';
 import 'package:todo/pages/todo_detail.dart';
 
 GoRouter routes = GoRouter(
