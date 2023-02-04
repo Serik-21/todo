@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:todo/assets.dart';
 
+import '../enums.dart';
 import '../service_locator.dart';
 import '../stores/todo_store.dart';
 
@@ -15,10 +18,15 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final todoStore = serviceLocator<ToDoStore>();
+  ToDoStatusEnum? statusEnum;
+  String title = "";
+  DateTime dateTime = DateTime.now();
   @override
   void initState() {
     super.initState();
+    statusEnum = ToDoStatusEnum.actual;
     todoStore.init();
+    title = "Нақты";
   }
 
   @override
@@ -30,32 +38,298 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(title),
+        actions: [
+          PopupMenuButton(
+              icon: const Icon(Icons.sort),
+              itemBuilder: (context) {
+                return [
+                  const PopupMenuItem(
+                    value: ToDoStatusEnum.actual,
+                    child: Text("Нақты"),
+                  ),
+                  const PopupMenuItem(
+                    value: ToDoStatusEnum.done,
+                    child: Text("Аяқталды"),
+                  ),
+                  const PopupMenuItem(
+                    value: ToDoStatusEnum.archived,
+                    child: Text("Мұрағат"),
+                  )
+                ];
+              },
+              onSelected: (value) {
+                if (value == ToDoStatusEnum.actual) {
+                  setState(() {
+                    statusEnum = ToDoStatusEnum.actual;
+                    title = "Нақты";
+                  });
+                } else if (value == ToDoStatusEnum.done) {
+                  setState(() {
+                    statusEnum = ToDoStatusEnum.done;
+                    title = "Аяқталды";
+                  });
+                } else if (value == ToDoStatusEnum.archived) {
+                  setState(() {
+                    statusEnum = ToDoStatusEnum.archived;
+                    title = "Мұрағат";
+                  });
+                }
+              })
+        ],
+      ),
 
-      body: Observer(builder: (context) {
-        return SingleChildScrollView(
-            physics: const NeverScrollableScrollPhysics(),
-            child: ListView(
+      body: SingleChildScrollView(
+          physics: const NeverScrollableScrollPhysics(),
+          child: Observer(builder: (context) {
+            return ListView(
               shrinkWrap: true,
               children: [
-                ...todoStore.todoList
-                    .map((todo) => Slidable(
-                          child: ListTile(
-                            title: Text(todo.title!),
-                            subtitle: todo.subTitle != null
-                                ? Text(todo.subTitle!)
-                                : null,
-                          ),
-                        ))
-                    .toList(),
+
+                //list today
+                if (todoStore.todoList
+                        .where((element) =>
+                            dateTime.difference(element.fromDate!).inDays == 0)
+                        .isNotEmpty &&
+                    statusEnum == ToDoStatusEnum.actual)
+                   Padding(
+                     padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                     child: Text("Бүгінге",style: Theme.of(context).textTheme.titleLarge,),
+                   ),
+                //list today
+                if (statusEnum == ToDoStatusEnum.actual)
+                  ...todoStore.todoList
+                      .where((element) => todoStore.todoList
+                          .where((element) =>
+                              dateTime.difference(element.fromDate!).inDays ==
+                              0)
+                          .isNotEmpty)
+                      .map((todo) => Slidable(
+                            startActionPane: ActionPane(
+                              motion: const ScrollMotion(),
+                              children: [
+                                SlidableAction(
+                                  onPressed: (e) {
+                                    setState(
+                                        () => todoStore.deleteActiveTodo(todo));
+                                  },
+                                  backgroundColor: const Color(0xFFFE4A49),
+                                  foregroundColor: Colors.white,
+                                  icon: Icons.delete,
+                                  label: 'Жою',
+                                ),
+                              ],
+                            ),
+                            endActionPane: ActionPane(
+                              motion: const ScrollMotion(),
+                              children: [
+                                SlidableAction(
+                                  onPressed: (context) => {
+                                    setState(() => todoStore.archiveTodo(todo))
+                                  },
+                                  backgroundColor: const Color(0xFFFF771F),
+                                  foregroundColor: Colors.white,
+                                  icon: Icons.archive,
+                                  label: 'Мұрағат',
+                                ),
+                                SlidableAction(
+                                  onPressed: (context) {
+                                    todoStore.doneTodo(todo);
+                                  },
+                                  backgroundColor: const Color(0xFF0392CF),
+                                  foregroundColor: Colors.white,
+                                  icon: Icons.done_outline_rounded,
+                                  label: 'Аяқталды',
+                                ),
+                              ],
+                            ),
+                            child: ListTile(
+                              onTap: () => showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) {
+                                    return Container();
+                                  }),
+                              title: Text(todo.title!),
+                              trailing: Text(
+                                  "${todo.time!}\n${DateFormat(kDefaultDataFormat).format(todo.fromDate!)}"),
+                              subtitle: todo.subTitle != null
+                                  ? Text(todo.subTitle!)
+                                  : null,
+                            ),
+                          )),
+
+
+                // list all
+                if (statusEnum == ToDoStatusEnum.actual)
+                  ...todoStore.todoList
+                      .where((element) =>
+                          dateTime.difference(element.fromDate!).inDays > 1)
+                      .map((todo) => Slidable(
+                            startActionPane: ActionPane(
+                              motion: const ScrollMotion(),
+                              children: [
+                                SlidableAction(
+                                  onPressed: (e) {
+                                    setState(
+                                        () => todoStore.deleteActiveTodo(todo));
+                                  },
+                                  backgroundColor: const Color(0xFFFE4A49),
+                                  foregroundColor: Colors.white,
+                                  icon: Icons.delete,
+                                  label: 'Жою',
+                                ),
+                              ],
+                            ),
+                            endActionPane: ActionPane(
+                              motion: const ScrollMotion(),
+                              children: [
+                                SlidableAction(
+                                  onPressed: (context) => {
+                                    setState(() => todoStore.archiveTodo(todo))
+                                  },
+                                  backgroundColor: const Color(0xFFFF771F),
+                                  foregroundColor: Colors.white,
+                                  icon: Icons.archive,
+                                  label: 'Мұрағат',
+                                ),
+                                SlidableAction(
+                                  onPressed: (context) {
+                                    todoStore.doneTodo(todo);
+                                  },
+                                  backgroundColor: const Color(0xFF0392CF),
+                                  foregroundColor: Colors.white,
+                                  icon: Icons.done_outline_rounded,
+                                  label: 'Аяқталды',
+                                ),
+                              ],
+                            ),
+                            child: ListTile(
+                              onTap: () => showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) {
+                                    return Container();
+                                  }),
+                              title: Text(todo.title!),
+                              trailing: Text(
+                                  "${todo.time!}\n${DateFormat(kDefaultDataFormat).format(todo.fromDate!)}"),
+                              subtitle: todo.subTitle != null
+                                  ? Text(todo.subTitle!)
+                                  : null,
+                            ),
+                          ))
+                      .toList(),
+
+                //done list
+                if (statusEnum == ToDoStatusEnum.done)
+                  ...todoStore.doneTodoList
+                      .map((todo) => Slidable(
+                            startActionPane: ActionPane(
+                              motion: const ScrollMotion(),
+                              children: [
+                                SlidableAction(
+                                  onPressed: (context) {
+                                    setState(() {
+                                      todoStore.deleteDoneTodo(todo);
+                                    });
+                                  },
+                                  backgroundColor: const Color(0xFFFE4A49),
+                                  foregroundColor: Colors.white,
+                                  icon: Icons.delete,
+                                  label: 'Жою',
+                                ),
+                              ],
+                            ),
+                            endActionPane: ActionPane(
+                              motion: const ScrollMotion(),
+                              children: [
+                                SlidableAction(
+                                  onPressed: (context) {
+                                    setState(() {
+                                      todoStore.returnToTodo(todo);
+                                    });
+                                  },
+                                  backgroundColor: const Color(0xFF0392CF),
+                                  foregroundColor: Colors.white,
+                                  icon: Icons.done_outline_rounded,
+                                  label: 'Тапсырмаларға оралу',
+                                ),
+                              ],
+                            ),
+                            child: ListTile(
+                              onTap: () => showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) {
+                                    return Container();
+                                  }),
+                              title: Text(todo.title!),
+                              trailing: Text(
+                                  "${todo.time!}\n${DateFormat(kDefaultDataFormat).format(todo.fromDate!)}"),
+                              subtitle: todo.subTitle != null
+                                  ? Text(todo.subTitle!)
+                                  : null,
+                            ),
+                          ))
+                      .toList(),
+                if (statusEnum == ToDoStatusEnum.archived)
+                  ...todoStore.archiveTodoList
+                      .map((todo) => Slidable(
+                            startActionPane: ActionPane(
+                              motion: const ScrollMotion(),
+                              children: [
+                                SlidableAction(
+                                  onPressed: (context) =>
+                                      todoStore.deleteArchiveTodo(todo),
+                                  backgroundColor: const Color(0xFFFE4A49),
+                                  foregroundColor: Colors.white,
+                                  icon: Icons.delete,
+                                  label: 'Жою',
+                                ),
+                              ],
+                            ),
+                            endActionPane: ActionPane(
+                              motion: const ScrollMotion(),
+                              children: [
+                                SlidableAction(
+                                  onPressed: (context) =>
+                                      todoStore.returnTodoFromArchive(todo),
+                                  backgroundColor: const Color(0xFFFF771F),
+                                  foregroundColor: Colors.white,
+                                  icon: Icons.archive,
+                                  label: 'Мұрағаттан жою',
+                                ),
+                              ],
+                            ),
+                            child: ListTile(
+                              onTap: () => showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) {
+                                    return Container();
+                                  }),
+                              title: Text(todo.title!),
+                              trailing: Text(
+                                  "${todo.time!}\n${DateFormat(kDefaultDataFormat).format(todo.fromDate!)}"),
+                              subtitle: todo.subTitle != null
+                                  ? Text(todo.subTitle!)
+                                  : null,
+                            ),
+                          ))
+                      .toList(),
               ],
-            ));
-      }),
+            );
+          })),
       floatingActionButton: FloatingActionButton(
         onPressed: () => context.go('/add'),
-        tooltip: 'add event',
+        tooltip: 'Тапсырма қосу',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+}
+
+extension DateOnlyCompare on DateTime {
+  bool isSameDate(DateTime other) {
+    return year == other.year && month == other.month && day == other.day;
   }
 }

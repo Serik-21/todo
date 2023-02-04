@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:todo/routes.dart';
 import 'package:todo/service_locator.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:todo/stores/notification_manager.dart';
-import 'package:todo/stores/todo_store.dart';
 import 'color_schemes.g.dart';
 
 void main() async {
@@ -23,6 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       themeMode: ThemeMode.dark,
       theme: ThemeData(

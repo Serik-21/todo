@@ -22,6 +22,12 @@ abstract class _ToDoStore with Store {
   @observable
   List<ToDo> todoList = [];
 
+  @observable
+  List<ToDo> doneTodoList = [];
+
+  @observable
+  List<ToDo> archiveTodoList = [];
+
   @action
   Future<void> init()async{
     final prefs = await SharedPreferences.getInstance();
@@ -30,6 +36,13 @@ abstract class _ToDoStore with Store {
     if(prefs.getString(kDefaultListKey)!= null) {
       Iterable l = jsonDecode(prefs.getString(kDefaultListKey)!);
       todoList = List<ToDo>.from(l.map((model)=> ToDo.fromJson(model)));
+    }
+    if(prefs.getString(kDefaultArchivedListKey)!= null) {
+      Iterable l = jsonDecode(prefs.getString(kDefaultArchivedListKey)!);
+      archiveTodoList = List<ToDo>.from(l.map((model)=> ToDo.fromJson(model)));
+    }    if(prefs.getString(kDefaultDoneListKey)!= null) {
+      Iterable l = jsonDecode(prefs.getString(kDefaultDoneListKey)!);
+      doneTodoList = List<ToDo>.from(l.map((model)=> ToDo.fromJson(model)));
     }
 
   }
@@ -75,6 +88,74 @@ abstract class _ToDoStore with Store {
     temp.time = value;
 
     selectedTodo = temp;
+  }
+
+  @action
+  Future deleteActiveTodo(ToDo value)async {
+    todoList.removeWhere((element) => element == value);
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(kDefaultListKey, jsonEncode(todoList));
+    todoList = todoList;
+  }
+  @action
+  Future deleteDoneTodo(ToDo value)async {
+    doneTodoList.removeWhere((element) => element == value);
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(kDefaultDoneListKey, jsonEncode(doneTodoList));
+    doneTodoList = doneTodoList;
+  }
+  @action
+  Future deleteArchiveTodo(ToDo value)async {
+    archiveTodoList.removeWhere((element) => element == value);
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(kDefaultArchivedListKey, jsonEncode(archiveTodoList));
+    archiveTodoList = archiveTodoList;
+  }
+  @action
+  Future archiveTodo(ToDo value)async{
+    ToDo temp = todoList.where((element) => element == value).single;
+    archiveTodoList.add(temp);
+    todoList.removeWhere((element) => element == value);
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(kDefaultArchivedListKey, jsonEncode(archiveTodoList));
+    prefs.setString(kDefaultListKey, jsonEncode(todoList));
+    todoList = todoList;
+    archiveTodoList = archiveTodoList;
+  }
+
+
+  @action
+  Future doneTodo(ToDo value)async{
+    ToDo temp = todoList.where((element) => element == value).single;
+    doneTodoList.add(temp);
+    todoList.removeWhere((element) => element == value);
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(kDefaultDoneListKey, jsonEncode(doneTodoList));
+    prefs.setString(kDefaultListKey, jsonEncode(todoList));
+    todoList = todoList;
+    doneTodoList = doneTodoList;
+  }
+  @action
+  Future returnToTodo(ToDo value)async{
+    ToDo temp = doneTodoList.where((element) => element == value).single;
+    todoList.add(temp);
+    doneTodoList.removeWhere((element) => element == value);
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(kDefaultListKey, jsonEncode(todoList));
+    prefs.setString(kDefaultDoneListKey, jsonEncode(doneTodoList));
+    todoList = todoList;
+    doneTodoList = doneTodoList;
+  }
+  @action
+  Future returnTodoFromArchive(ToDo value)async{
+    ToDo temp = archiveTodoList.where((element) => element == value).single;
+    todoList.add(temp);
+    archiveTodoList.removeWhere((element) => element == value);
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(kDefaultListKey, jsonEncode(todoList));
+    prefs.setString(kDefaultArchivedListKey, jsonEncode(archiveTodoList));
+    todoList = todoList;
+    archiveTodoList = archiveTodoList;
   }
 
   @action

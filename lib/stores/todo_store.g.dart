@@ -41,12 +41,103 @@ mixin _$ToDoStore on _ToDoStore, Store {
     });
   }
 
+  late final _$doneTodoListAtom =
+      Atom(name: '_ToDoStore.doneTodoList', context: context);
+
+  @override
+  List<ToDo> get doneTodoList {
+    _$doneTodoListAtom.reportRead();
+    return super.doneTodoList;
+  }
+
+  @override
+  set doneTodoList(List<ToDo> value) {
+    _$doneTodoListAtom.reportWrite(value, super.doneTodoList, () {
+      super.doneTodoList = value;
+    });
+  }
+
+  late final _$archiveTodoListAtom =
+      Atom(name: '_ToDoStore.archiveTodoList', context: context);
+
+  @override
+  List<ToDo> get archiveTodoList {
+    _$archiveTodoListAtom.reportRead();
+    return super.archiveTodoList;
+  }
+
+  @override
+  set archiveTodoList(List<ToDo> value) {
+    _$archiveTodoListAtom.reportWrite(value, super.archiveTodoList, () {
+      super.archiveTodoList = value;
+    });
+  }
+
   late final _$initAsyncAction =
       AsyncAction('_ToDoStore.init', context: context);
 
   @override
   Future<void> init() {
     return _$initAsyncAction.run(() => super.init());
+  }
+
+  late final _$deleteActiveTodoAsyncAction =
+      AsyncAction('_ToDoStore.deleteActiveTodo', context: context);
+
+  @override
+  Future<dynamic> deleteActiveTodo(ToDo value) {
+    return _$deleteActiveTodoAsyncAction
+        .run(() => super.deleteActiveTodo(value));
+  }
+
+  late final _$deleteDoneTodoAsyncAction =
+      AsyncAction('_ToDoStore.deleteDoneTodo', context: context);
+
+  @override
+  Future<dynamic> deleteDoneTodo(ToDo value) {
+    return _$deleteDoneTodoAsyncAction.run(() => super.deleteDoneTodo(value));
+  }
+
+  late final _$deleteArchiveTodoAsyncAction =
+      AsyncAction('_ToDoStore.deleteArchiveTodo', context: context);
+
+  @override
+  Future<dynamic> deleteArchiveTodo(ToDo value) {
+    return _$deleteArchiveTodoAsyncAction
+        .run(() => super.deleteArchiveTodo(value));
+  }
+
+  late final _$archiveTodoAsyncAction =
+      AsyncAction('_ToDoStore.archiveTodo', context: context);
+
+  @override
+  Future<dynamic> archiveTodo(ToDo value) {
+    return _$archiveTodoAsyncAction.run(() => super.archiveTodo(value));
+  }
+
+  late final _$doneTodoAsyncAction =
+      AsyncAction('_ToDoStore.doneTodo', context: context);
+
+  @override
+  Future<dynamic> doneTodo(ToDo value) {
+    return _$doneTodoAsyncAction.run(() => super.doneTodo(value));
+  }
+
+  late final _$returnToTodoAsyncAction =
+      AsyncAction('_ToDoStore.returnToTodo', context: context);
+
+  @override
+  Future<dynamic> returnToTodo(ToDo value) {
+    return _$returnToTodoAsyncAction.run(() => super.returnToTodo(value));
+  }
+
+  late final _$returnTodoFromArchiveAsyncAction =
+      AsyncAction('_ToDoStore.returnTodoFromArchive', context: context);
+
+  @override
+  Future<dynamic> returnTodoFromArchive(ToDo value) {
+    return _$returnTodoFromArchiveAsyncAction
+        .run(() => super.returnTodoFromArchive(value));
   }
 
   late final _$addTodoToListAsyncAction =
@@ -130,7 +221,9 @@ mixin _$ToDoStore on _ToDoStore, Store {
   String toString() {
     return '''
 selectedTodo: ${selectedTodo},
-todoList: ${todoList}
+todoList: ${todoList},
+doneTodoList: ${doneTodoList},
+archiveTodoList: ${archiveTodoList}
     ''';
   }
 }

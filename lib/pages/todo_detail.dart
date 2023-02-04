@@ -61,7 +61,7 @@ class _ToDoDetailsState extends State<ToDoDetails> {
                       }
                       return null;
                     },
-                    decoration: const InputDecoration(labelText: 'Заголовок'),
+                    decoration: const InputDecoration(labelText: 'Тақырыбы'),
                     onChanged: (value) => todoStore.setTitle(value),
                   ),
                   SizedBox(
@@ -75,7 +75,7 @@ class _ToDoDetailsState extends State<ToDoDetails> {
                       return null;
                     },
                     decoration:
-                        const InputDecoration(labelText: 'Подзаголовок'),
+                        const InputDecoration(labelText: 'Қосымша тақырып'),
                     onChanged: (value) => todoStore.setSubTitle(value),
                   ),
                   SizedBox(
@@ -90,7 +90,7 @@ class _ToDoDetailsState extends State<ToDoDetails> {
                     },
                     readOnly: true,
                     decoration: InputDecoration(
-                      labelText:  'Выбрать дату'
+                      labelText:  'Күнді таңдаңыз'
                         ,
                       suffixIcon: IconButton(
                           onPressed: () {
@@ -100,7 +100,7 @@ class _ToDoDetailsState extends State<ToDoDetails> {
                                   DatePickerEntryMode.calendarOnly,
                               firstDate: DateTime.now(),
                               lastDate: DateTime(2045),
-                              cancelText: "Отмена", initialDate: DateTime.now(),
+                              cancelText: "Болдырмау", initialDate: DateTime.now(),
                             ).then((value) {
                               setRange(value);
                             });
@@ -124,7 +124,7 @@ class _ToDoDetailsState extends State<ToDoDetails> {
                       readOnly: true,
                       controller: dueDateController,
                       decoration: const InputDecoration(
-                        labelText: 'Дата завершения',
+                        labelText: 'Аяқтау күні',
                       ),
                     ),
                   SizedBox(
@@ -140,16 +140,16 @@ class _ToDoDetailsState extends State<ToDoDetails> {
                     readOnly: true,
                     controller: timeController,
                     decoration: InputDecoration(
-                        labelText: 'Время',
+                        labelText: 'Уақыт',
                         suffixIcon: IconButton(
                             onPressed: () {
                               showTimePicker(
                                 context: context,
                                 initialTime: TimeOfDay.now(),
-                                confirmText: "Выбрать",
+                                confirmText: "Таңдау",
                                 initialEntryMode: TimePickerEntryMode.dialOnly,
-                                cancelText: "Отмена",
-                                hourLabelText: "Выбрать время",
+                                cancelText: "Болдырмау",
+                                hourLabelText: "Уақытты таңдаңыз",
                               ).then((value){
                                 timeController.text = value!.format(context);
                                 todoStore.setTime(value.format(context));
@@ -167,7 +167,7 @@ class _ToDoDetailsState extends State<ToDoDetails> {
                           context.pop();
                         }
                       },
-                      child: const Text("Добавить задачу"))
+                      child: const Text("Тапсырма қосу"))
                 ],
               ),
             ),

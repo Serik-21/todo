@@ -13,5 +13,5 @@ final logger = Logger(
   ),
 );
 void setupSingleton(){
-  serviceLocator..registerSingleton<ToDoStore>(ToDoStore());
+  serviceLocator.registerSingleton<ToDoStore>(ToDoStore());
 }
