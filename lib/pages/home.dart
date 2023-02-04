@@ -91,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 //list today
                 if (todoStore.todoList
                         .where((element) =>
-                            dateTime.difference(element.fromDate!).inDays == 0)
+                            dateTime.isSameDate(element.fromDate!))
                         .isNotEmpty &&
                     statusEnum == ToDoStatusEnum.actual)
                    Padding(
@@ -101,19 +101,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 //list today
                 if (statusEnum == ToDoStatusEnum.actual)
                   ...todoStore.todoList
-                      .where((element) => todoStore.todoList
-                          .where((element) =>
-                              dateTime.difference(element.fromDate!).inDays ==
-                              0)
-                          .isNotEmpty)
+                      .where((element) => dateTime.isSameDate(element.fromDate!))
                       .map((todo) => Slidable(
                             startActionPane: ActionPane(
                               motion: const ScrollMotion(),
                               children: [
                                 SlidableAction(
                                   onPressed: (e) {
-                                    setState(
-                                        () => todoStore.deleteActiveTodo(todo));
+                                    todoStore.deleteActiveTodo(todo);
                                   },
                                   backgroundColor: const Color(0xFFFE4A49),
                                   foregroundColor: Colors.white,
@@ -126,8 +121,8 @@ class _MyHomePageState extends State<MyHomePage> {
                               motion: const ScrollMotion(),
                               children: [
                                 SlidableAction(
-                                  onPressed: (context) => {
-                                    setState(() => todoStore.archiveTodo(todo))
+                                  onPressed: (context) {
+                                    todoStore.archiveTodo(todo);
                                   },
                                   backgroundColor: const Color(0xFFFF771F),
                                   foregroundColor: Colors.white,
@@ -159,21 +154,30 @@ class _MyHomePageState extends State<MyHomePage> {
                                   : null,
                             ),
                           )),
+                if(statusEnum == ToDoStatusEnum.actual)
 
-
+                    const SizedBox(height: 4,),
+                if(statusEnum == ToDoStatusEnum.actual)
+                  const Divider(height: 2,),
+                if(statusEnum == ToDoStatusEnum.actual)
+                  const SizedBox(height: 4,),
+                if(statusEnum == ToDoStatusEnum.actual)
+                Padding(
+                  padding:  EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                  child: Text("Барлық тапсырмалар",style: Theme.of(context).textTheme.titleLarge,),
+                ),
                 // list all
-                if (statusEnum == ToDoStatusEnum.actual)
+                  if (statusEnum == ToDoStatusEnum.actual)
                   ...todoStore.todoList
                       .where((element) =>
-                          dateTime.difference(element.fromDate!).inDays > 1)
+                          dateTime.isSameDate(element.fromDate!) == false)
                       .map((todo) => Slidable(
                             startActionPane: ActionPane(
                               motion: const ScrollMotion(),
                               children: [
                                 SlidableAction(
                                   onPressed: (e) {
-                                    setState(
-                                        () => todoStore.deleteActiveTodo(todo));
+                                    todoStore.deleteActiveTodo(todo);
                                   },
                                   backgroundColor: const Color(0xFFFE4A49),
                                   foregroundColor: Colors.white,
@@ -186,9 +190,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               motion: const ScrollMotion(),
                               children: [
                                 SlidableAction(
-                                  onPressed: (context) => {
-                                    setState(() => todoStore.archiveTodo(todo))
-                                  },
+                                  onPressed: (context) => todoStore.archiveTodo(todo),
                                   backgroundColor: const Color(0xFFFF771F),
                                   foregroundColor: Colors.white,
                                   icon: Icons.archive,
@@ -230,9 +232,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               children: [
                                 SlidableAction(
                                   onPressed: (context) {
-                                    setState(() {
-                                      todoStore.deleteDoneTodo(todo);
-                                    });
+                                    todoStore.deleteDoneTodo(todo);
                                   },
                                   backgroundColor: const Color(0xFFFE4A49),
                                   foregroundColor: Colors.white,
@@ -246,9 +246,8 @@ class _MyHomePageState extends State<MyHomePage> {
                               children: [
                                 SlidableAction(
                                   onPressed: (context) {
-                                    setState(() {
-                                      todoStore.returnToTodo(todo);
-                                    });
+                                    todoStore.returnToTodo(todo);
+
                                   },
                                   backgroundColor: const Color(0xFF0392CF),
                                   foregroundColor: Colors.white,
