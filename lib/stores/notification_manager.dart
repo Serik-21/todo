@@ -1,10 +1,11 @@
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:todo/service_locator.dart';
-
+// NotificationManager класс для работы с уведомлениями
 class NotificationManager {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
+  // Инициализация метода класса для работы с уведомлениями
   Future<void> initNotification() async {
     flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin>()?.requestPermission();
@@ -41,6 +42,7 @@ class NotificationManager {
     logger.w(scheduledDate);
     return scheduledDate;
   }
+  //Для показа для показа уведомление на каждый день
   Future<void> showNotification() async {
     await flutterLocalNotificationsPlugin.periodicallyShow(
       0,

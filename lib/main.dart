@@ -3,7 +3,7 @@ import 'package:todo/routes.dart';
 import 'package:todo/service_locator.dart';
 import 'package:todo/stores/notification_manager.dart';
 import 'color_schemes.g.dart';
-
+//метод main используется для инициализаций настроек
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setupSingleton();
