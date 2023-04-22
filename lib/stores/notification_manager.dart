@@ -1,22 +1,22 @@
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:todo/service_locator.dart';
-// NotificationManager класс для работы с уведомлениями
+/// NotificationManager класс для работы с уведомлениями
 class NotificationManager {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
-  // Инициализация метода класса для работы с уведомлениями
+  /// Инициализация метода класса для работы с уведомлениями
   Future<void> initNotification() async {
     flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin>()?.requestPermission();
-    // Android initialization
+    /// Android initialization
     const AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings('@mipmap/ic_launcher');// should mention the app icon
-    // during initialization itself
+    AndroidInitializationSettings('@mipmap/ic_launcher');/// should mention the app icon
+    /// during initialization itself
 
 
 
-    // Ios initialization
+    /// Ios initialization
     const DarwinInitializationSettings initializationSettingsIOS =
     DarwinInitializationSettings(
       requestAlertPermission: false,
@@ -29,7 +29,7 @@ class NotificationManager {
         android: initializationSettingsAndroid,
         iOS: initializationSettingsIOS);
 
-    // the initialization settings are initialized after they are setted
+    /// the initialization settings are initialized after they are setted
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
   tz.TZDateTime _nextInstanceOfTenAM() {
@@ -42,7 +42,7 @@ class NotificationManager {
     logger.w(scheduledDate);
     return scheduledDate;
   }
-  //Для показа для показа уведомление на каждый день
+  ///Для показа для показа уведомление на каждый день
   Future<void> showNotification() async {
     await flutterLocalNotificationsPlugin.periodicallyShow(
       0,
@@ -50,12 +50,12 @@ class NotificationManager {
       "Бугінгі тапсырмаларыңызды тексеріңіз",
       RepeatInterval.daily,
       const NotificationDetails(
-        // Android details
+        /// Android details
         android: AndroidNotificationDetails('main_channel', 'Main Channel',
             channelDescription: "ashwin",
             importance: Importance.max,
             priority: Priority.max),
-        // iOS details
+        /// iOS details
         iOS: DarwinNotificationDetails(
           sound: 'default.wav',
           presentAlert: true,
@@ -64,7 +64,7 @@ class NotificationManager {
         ),
 
       ),
-      androidAllowWhileIdle: true,//To show notification even when the app is closed
+      androidAllowWhileIdle: true,///To show notification even when the app is closed
     );
   }
 

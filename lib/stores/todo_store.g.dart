@@ -196,17 +196,6 @@ mixin _$ToDoStore on _ToDoStore, Store {
   }
 
   @override
-  void setToDue(DateTime value) {
-    final _$actionInfo =
-        _$_ToDoStoreActionController.startAction(name: '_ToDoStore.setToDue');
-    try {
-      return super.setToDue(value);
-    } finally {
-      _$_ToDoStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   void setTime(String value) {
     final _$actionInfo =
         _$_ToDoStoreActionController.startAction(name: '_ToDoStore.setTime');

@@ -1,7 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:todo/pages/home.dart';
 import 'package:todo/pages/todo_detail.dart';
-//создание путей для работы с АПП
+///создание путей для работы с АПП
 GoRouter routes = GoRouter(
   initialLocation: '/',
   debugLogDiagnostics: true,

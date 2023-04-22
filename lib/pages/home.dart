@@ -31,12 +31,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    /// This method is rerun every time setState is called, for instance as done
+    /// by the _incrementCounter method above.
+    ///
+    /// The Flutter framework has been optimized to make rerunning build methods
+    /// fast, so that you can just rebuild anything that needs updating rather
+    /// than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -88,20 +88,20 @@ class _MyHomePageState extends State<MyHomePage> {
               shrinkWrap: true,
               children: [
 
-                //list today
+                ///list today
                 if (todoStore.todoList
                         .where((element) =>
-                            dateTime.isSameDate(element.fromDate!))
+                            dateTime.isSameDate(element.dueDate!))
                         .isNotEmpty &&
                     statusEnum == ToDoStatusEnum.actual)
                    Padding(
                      padding: EdgeInsets.symmetric(horizontal: kDefaultPadding),
                      child: Text("Бүгінге",style: Theme.of(context).textTheme.titleLarge,),
                    ),
-                //list today
+                ///list today
                 if (statusEnum == ToDoStatusEnum.actual)
                   ...todoStore.todoList
-                      .where((element) => dateTime.isSameDate(element.fromDate!))
+                      .where((element) => dateTime.isSameDate(element.dueDate!))
                       .map((todo) => Slidable(
                             startActionPane: ActionPane(
                               motion: const ScrollMotion(),
@@ -148,7 +148,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   }),
                               title: Text(todo.title!),
                               trailing: Text(
-                                  "${todo.time!}\n${DateFormat(kDefaultDataFormat).format(todo.fromDate!)}"),
+                                  "${todo.time!}\n${DateFormat(kDefaultDataFormat).format(todo.dueDate!)}"),
                               subtitle: todo.subTitle != null
                                   ? Text(todo.subTitle!)
                                   : null,
@@ -166,11 +166,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   padding:  EdgeInsets.symmetric(horizontal: kDefaultPadding),
                   child: Text("Барлық тапсырмалар",style: Theme.of(context).textTheme.titleLarge,),
                 ),
-                // list all
+                /// list all
                   if (statusEnum == ToDoStatusEnum.actual)
                   ...todoStore.todoList
                       .where((element) =>
-                          dateTime.isSameDate(element.fromDate!) == false)
+                          dateTime.isSameDate(element.dueDate!) == false)
                       .map((todo) => Slidable(
                             startActionPane: ActionPane(
                               motion: const ScrollMotion(),
@@ -215,7 +215,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   }),
                               title: Text(todo.title!),
                               trailing: Text(
-                                  "${todo.time!}\n${DateFormat(kDefaultDataFormat).format(todo.fromDate!)}"),
+                                  "${todo.time!}\n${DateFormat(kDefaultDataFormat).format(todo.dueDate!)}"),
                               subtitle: todo.subTitle != null
                                   ? Text(todo.subTitle!)
                                   : null,
@@ -223,7 +223,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ))
                       .toList(),
 
-                //done list
+                ///done list
                 if (statusEnum == ToDoStatusEnum.done)
                   ...todoStore.doneTodoList
                       .map((todo) => Slidable(
@@ -264,7 +264,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   }),
                               title: Text(todo.title!),
                               trailing: Text(
-                                  "${todo.time!}\n${DateFormat(kDefaultDataFormat).format(todo.fromDate!)}"),
+                                  "${todo.time!}\n${DateFormat(kDefaultDataFormat).format(todo.dueDate!)}"),
                               subtitle: todo.subTitle != null
                                   ? Text(todo.subTitle!)
                                   : null,
@@ -308,7 +308,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   }),
                               title: Text(todo.title!),
                               trailing: Text(
-                                  "${todo.time!}\n${DateFormat(kDefaultDataFormat).format(todo.fromDate!)}"),
+                                  "${todo.time!}\n${DateFormat(kDefaultDataFormat).format(todo.dueDate!)}"),
                               subtitle: todo.subTitle != null
                                   ? Text(todo.subTitle!)
                                   : null,
@@ -322,7 +322,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () => context.go('/add'),
         tooltip: 'Тапсырма қосу',
         child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ), /// This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

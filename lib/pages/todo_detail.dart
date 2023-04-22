@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:todo/assets.dart';
 import 'package:todo/stores/todo_store.dart';
+import '../models/event_model.dart';
 import '../service_locator.dart';
 
 class ToDoDetails extends StatefulWidget {
@@ -26,11 +28,13 @@ class _ToDoDetailsState extends State<ToDoDetails> {
   void setRange(DateTime? value) {
     if (value != null) {
       fromDate = value;
-      String formattedDate = DateFormat(kDefaultDataFormat).format(fromDate!.subtract(const Duration(hours: 17,minutes: 3)));
+      String formattedDate = DateFormat(kDefaultDataFormat)
+          .format(fromDate!.subtract(const Duration(hours: 17, minutes: 3)));
       fromDateController.text = formattedDate;
       todoStore.setFromDate(fromDate!);
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -90,8 +94,7 @@ class _ToDoDetailsState extends State<ToDoDetails> {
                     },
                     readOnly: true,
                     decoration: InputDecoration(
-                      labelText:  'Күнді таңдаңыз'
-                        ,
+                      labelText: 'Күнді таңдаңыз',
                       suffixIcon: IconButton(
                           onPressed: () {
                             showDatePicker(
@@ -100,7 +103,8 @@ class _ToDoDetailsState extends State<ToDoDetails> {
                                   DatePickerEntryMode.calendarOnly,
                               firstDate: DateTime.now(),
                               lastDate: DateTime(2045),
-                              cancelText: "Болдырмау", initialDate: DateTime.now(),
+                              cancelText: "Болдырмау",
+                              initialDate: DateTime.now(),
                             ).then((value) {
                               setRange(value);
                             });
@@ -150,7 +154,7 @@ class _ToDoDetailsState extends State<ToDoDetails> {
                                 initialEntryMode: TimePickerEntryMode.dialOnly,
                                 cancelText: "Болдырмау",
                                 hourLabelText: "Уақытты таңдаңыз",
-                              ).then((value){
+                              ).then((value) {
                                 timeController.text = value!.format(context);
                                 todoStore.setTime(value.format(context));
                               });

@@ -12,7 +12,7 @@ final logger = Logger(
     printTime: true,
   ),
 );
-//создание синглтона для работы с классом
+///создание синглтона для работы с классом
 void setupSingleton(){
   serviceLocator.registerSingleton<ToDoStore>(ToDoStore());
 }

@@ -1,6 +1,6 @@
-
 import 'dart:convert';
 
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,7 +11,7 @@ import 'package:todo/stores/notification_manager.dart';
 import '../assets.dart';
 part 'todo_store.g.dart';
 
-//singleton класс для работы
+///singleton класс для работы
 class ToDoStore = _ToDoStore with _$ToDoStore;
 
 abstract class _ToDoStore with Store {
@@ -19,71 +19,72 @@ abstract class _ToDoStore with Store {
 
   @observable
   ToDo? selectedTodo = ToDo();
-  //Дефолтный массив для списка задач
+
+  ///Дефолтный массив для списка задач
   @observable
   List<ToDo> todoList = [];
-  //завершенный массив для списка задач
+
+  ///завершенный массив для списка задач
   @observable
   List<ToDo> doneTodoList = [];
-  //архивный массив для списка задач
+
+  ///архивный массив для списка задач
   @observable
   List<ToDo> archiveTodoList = [];
-  //инициализация данных и настроек
+
+  ///инициализация данных и настроек
   @action
-  Future<void> init()async{
+  Future<void> init() async {
     final prefs = await SharedPreferences.getInstance();
     tz.initializeTimeZones();
 
-    if(prefs.getString(kDefaultListKey)!= null) {
+    if (prefs.getString(kDefaultListKey) != null) {
       Iterable l = jsonDecode(prefs.getString(kDefaultListKey)!);
-      todoList = List<ToDo>.from(l.map((model)=> ToDo.fromJson(model)));
+      todoList = List<ToDo>.from(l.map((model) => ToDo.fromJson(model)));
     }
-    if(prefs.getString(kDefaultArchivedListKey)!= null) {
+    if (prefs.getString(kDefaultArchivedListKey) != null) {
       Iterable l = jsonDecode(prefs.getString(kDefaultArchivedListKey)!);
-      archiveTodoList = List<ToDo>.from(l.map((model)=> ToDo.fromJson(model)));
-    }    if(prefs.getString(kDefaultDoneListKey)!= null) {
-      Iterable l = jsonDecode(prefs.getString(kDefaultDoneListKey)!);
-      doneTodoList = List<ToDo>.from(l.map((model)=> ToDo.fromJson(model)));
+      archiveTodoList = List<ToDo>.from(l.map((model) => ToDo.fromJson(model)));
     }
-
+    if (prefs.getString(kDefaultDoneListKey) != null) {
+      Iterable l = jsonDecode(prefs.getString(kDefaultDoneListKey)!);
+      doneTodoList = List<ToDo>.from(l.map((model) => ToDo.fromJson(model)));
+    }
   }
-  //сеттеры задач
+
+  ///сеттеры задач
   @action
   void setTitle(String value) {
     final temp = selectedTodo!;
     temp.title = value;
     selectedTodo = temp;
   }
-  //сеттеры задач
+
+  ///сеттеры задач
   @action
   void setSubTitle(String value) {
     final temp = selectedTodo!;
     temp.subTitle = value;
     selectedTodo = temp;
   }
-  //сеттеры задач
+
+  ///сеттеры задач
   @action
   void setUserTag(String value) {
     final temp = selectedTodo!;
     temp.userTag = value;
     selectedTodo = temp;
   }
-  //сеттеры задач
+
+  ///сеттеры задач
   @action
   void setFromDate(DateTime value) {
     final temp = selectedTodo!;
-    temp.fromDate = value;
-    selectedTodo = temp;
-  }
-  //сеттеры задач
-  @action
-  void setToDue(DateTime value) {
-    final temp = selectedTodo!;
     temp.dueDate = value;
-
     selectedTodo = temp;
   }
-  //сеттеры задач
+
+  ///сеттеры задач
   @action
   void setTime(String value) {
     final temp = selectedTodo!;
@@ -91,33 +92,37 @@ abstract class _ToDoStore with Store {
 
     selectedTodo = temp;
   }
-  //удаление задачи с дефолтного массива
+
+  ///удаление задачи с дефолтного массива
   @action
-  Future deleteActiveTodo(ToDo value)async {
+  Future deleteActiveTodo(ToDo value) async {
     todoList.removeWhere((element) => element == value);
     final prefs = await SharedPreferences.getInstance();
     prefs.setString(kDefaultListKey, jsonEncode(todoList));
     todoList = todoList;
   }
-  //удаление задачи с завершенного массива
+
+  ///удаление задачи с завершенного массива
   @action
-  Future deleteDoneTodo(ToDo value)async {
+  Future deleteDoneTodo(ToDo value) async {
     doneTodoList.removeWhere((element) => element == value);
     final prefs = await SharedPreferences.getInstance();
     prefs.setString(kDefaultDoneListKey, jsonEncode(doneTodoList));
     doneTodoList = doneTodoList;
   }
-  //удаление задачи с архивного массива
+
+  ///удаление задачи с архивного массива
   @action
-  Future deleteArchiveTodo(ToDo value)async {
+  Future deleteArchiveTodo(ToDo value) async {
     archiveTodoList.removeWhere((element) => element == value);
     final prefs = await SharedPreferences.getInstance();
     prefs.setString(kDefaultArchivedListKey, jsonEncode(archiveTodoList));
     archiveTodoList = archiveTodoList;
   }
-  //архивировать задачу
+
+  ///архивировать задачу
   @action
-  Future archiveTodo(ToDo value)async{
+  Future archiveTodo(ToDo value) async {
     ToDo temp = todoList.where((element) => element == value).single;
     archiveTodoList.add(temp);
     todoList.removeWhere((element) => element == value);
@@ -128,9 +133,9 @@ abstract class _ToDoStore with Store {
     archiveTodoList = archiveTodoList;
   }
 
-  //завершить задачу
+  ///завершить задачу
   @action
-  Future doneTodo(ToDo value)async{
+  Future doneTodo(ToDo value) async {
     ToDo temp = todoList.where((element) => element == value).single;
     doneTodoList.add(temp);
     todoList.removeWhere((element) => element == value);
@@ -140,9 +145,10 @@ abstract class _ToDoStore with Store {
     todoList = todoList;
     doneTodoList = doneTodoList;
   }
-  //вернуть задачу в дефолтный массив
+
+  ///вернуть задачу в дефолтный массив
   @action
-  Future returnToTodo(ToDo value)async{
+  Future returnToTodo(ToDo value) async {
     ToDo temp = doneTodoList.where((element) => element == value).single;
     todoList.add(temp);
     doneTodoList.removeWhere((element) => element == value);
@@ -152,9 +158,10 @@ abstract class _ToDoStore with Store {
     todoList = todoList;
     doneTodoList = doneTodoList;
   }
-  //вернуть задачу в с архива
+
+  ///вернуть задачу в с архива
   @action
-  Future returnTodoFromArchive(ToDo value)async{
+  Future returnTodoFromArchive(ToDo value) async {
     ToDo temp = archiveTodoList.where((element) => element == value).single;
     todoList.add(temp);
     archiveTodoList.removeWhere((element) => element == value);
@@ -164,22 +171,54 @@ abstract class _ToDoStore with Store {
     todoList = todoList;
     archiveTodoList = archiveTodoList;
   }
-  //добавить задачу в дефолтный массив
-  @action
-  Future<void> addTodoToList()async {
-    ToDo toDo = ToDo(
-      title: selectedTodo!.title,
-      subTitle: selectedTodo!.subTitle,
-      userTag: selectedTodo!.userTag,
-      fromDate: selectedTodo!.fromDate,
-      dueDate: selectedTodo!.dueDate,
-      time: selectedTodo!.time,
-      description: selectedTodo!.description
 
-    );
+  ///добавить задачу в дефолтный массив
+  @action
+  Future<void> addTodoToList() async {
+    ToDo toDo = ToDo(
+        title: selectedTodo!.title,
+        subTitle: selectedTodo!.subTitle,
+        userTag: selectedTodo!.userTag,
+        dueDate: selectedTodo!.dueDate,
+        time: selectedTodo!.time,
+        description: selectedTodo!.description);
     todoList.add(toDo);
-    logger.w(selectedTodo!.fromDate!);
+    scheduleNotification(toDo);
+    logger.w(selectedTodo!.dueDate!);
     final prefs = await SharedPreferences.getInstance();
     prefs.setString(kDefaultListKey, jsonEncode(todoList));
+  }
+
+  Future<void> scheduleNotification(ToDo todo) async {
+    var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
+        'channel id', 'channel name',
+        importance: Importance.max, priority: Priority.high);
+
+    var platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+    );
+
+    var scheduledDateTime = DateTime(
+            todo.dueDate!.year,
+            todo.dueDate!.month,
+            todo.dueDate!.day,
+            int.parse(todo.time!.split(":")[0]),
+            int.parse(todo.time!.split(":")[1]))
+        .subtract(Duration(hours: 1));
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
+    var initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+    );
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+    await flutterLocalNotificationsPlugin.schedule(
+        0,
+        'Напоминание',
+        'О событий "${todo.title}" через час',
+        scheduledDateTime,
+        platformChannelSpecifics);
   }
 }
